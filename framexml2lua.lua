@@ -539,7 +539,7 @@ tags = {
 	end,
 	--["DisabledColor"] = types["ColorType"], no Lua equivalent, not used in FrameXML
 	["DisabledFont"] = function(obj, parent, grandparent)
-		attrfunc(parent, "SetDisabledFontObject", types["ButtonStyleType"](obj))
+		attrfunc(parent, "SetDisabledFontObject", quote(types["ButtonStyleType"](obj)))
 	end,
 	["DisabledTexture"] = function(obj, parent, grandparent)
 		local ret = types["TextureType"](obj, parent, grandparent)
@@ -566,7 +566,7 @@ tags = {
 	["Gradient"] = types["GradientType"],
 	--["HighlightColor"] = types["ColorType"], no Lua equivalent, not used in FrameXML
 	["HighlightFont"] = function(obj, parent, grandparent)
-		attrfunc(parent, "SetHighlightFontObject", types["ButtonStyleType"](obj))
+		attrfunc(parent, "SetHighlightFontObject", quote(types["ButtonStyleType"](obj)))
 	end,
 	["HighlightTexture"] = function(obj, parent, grandparent)
 		local ret = types["TextureType"](obj, parent, grandparent)
@@ -603,7 +603,7 @@ tags = {
 	["MovieFrame"] = types["MovieFrameType"],
 	--["NormalColor"] = types["ColorType"], no Lua equivalent, not used in FrameXML
 	["NormalFont"] = function(obj, parent, grandparent)
-		attrfunc(parent, "SetNormalFontObject", types["ButtonStyleType"](obj))
+		attrfunc(parent, "SetNormalFontObject", quote(types["ButtonStyleType"](obj)))
 	end,
 	["NormalTexture"] = function(obj, parent, grandparent)
 		local ret = types["TextureType"](obj, parent, grandparent)
