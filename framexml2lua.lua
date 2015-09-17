@@ -35,6 +35,87 @@ local function attrfunc(...) _attrfunc(false, ...) end
 local function reqattrfunc(...)	_attrfunc(true, ...) end
 
 
+scriptargs = {
+	["OnAnimFinished"] = "self",
+	["OnArrowPressed"] = "self, key",
+	["OnAttributeChanged"] = "self, name, value",
+	["OnButtonUpdate"] = "self, action",
+	["OnChar"] = "self, text",
+	["OnCharComposition"] = "self, text",
+	["OnClick"] = "self, button, down",
+	["OnColorSelect"] = "self, r, g, b",
+	["OnCooldownDone"] = "self",
+	["OnCursorChanged"] = "self, x, y, width, height",
+	["OnDisable"] = "self",
+	["OnDoubleClick"] = "self, button",
+	["OnDragStart"] = "self, button",
+	["OnDragStop"] = "self",
+	["OnEditFocusGained"] = "self",
+	["OnEditFocusLost"] = "self",
+	["OnEnable"] = "self",
+	["OnEnter"] = "self, motion",
+	["OnEnterPressed"] = "self",
+	["OnError"] = "self, msg",
+	["OnEscapePressed"] = "self",
+	["OnEvent"] = "self, event, ...",
+	["OnExternalLink"] = "self, url",
+	["OnFinished"] = "self, requested",
+	["OnHide"] = "self",
+	["OnHorizontalScroll"] = "self, offset",
+	["OnHyperlinkClick"] = "self, link, text, button",
+	["OnHyperlinkEnter"] = "self, link, text",
+	["OnHyperlinkLeave"] = "self, link, text",
+	["OnInputLanguageChanged"] = "self, language",
+	--[[ unknown args, not used in FrameXML
+	["OnJoystickAxisMotion"]
+	["OnJoystickButtonDown"]
+	["OnJoystickButtonUp"]
+	["OnJoystickHatMotion"]
+	["OnJoystickStickMotion"]
+	--]]
+	["OnKeyDown"] = "self, key",
+	["OnKeyUp"] = "self, key",
+	["OnLeave"] = "self, motion",
+	["OnLoad"] = "self",
+	["OnLoop"] = "self, loopState",
+	["OnMessageScrollChanged"] = "self",
+	["OnMinMaxChanged"] = "self, min, max",
+	["OnMouseDown"] = "self, button",
+	["OnMouseUp"] = "self, button",
+	["OnMouseWheel"] = "self, delta",
+	["OnMovieFinished"] = "self",
+	["OnMovieHideSubtitle"] = "self",
+	["OnMovieShowSubtitle"] = "self, text",
+	["OnPause"] = "self",
+	["OnPlay"] = "self",
+	["OnReceiveDrag"] = "self",
+	["OnScrollRangeChanged"] = "self, xrange, yrange",
+	["OnShow"] = "self",
+	["OnSizeChanged"] = "self, w, h",
+	["OnSpacePressed"] = "self",
+	["OnStop"] = "self, requested",
+	["OnTabPressed"] = "self",
+	["OnTextChanged"] = "self, userInput",
+	["OnTextSet"] = "self",
+	["OnTooltipAddMoney"] = "self, cost, maxcost",
+	["OnTooltipCleared"] = "self",
+	["OnTooltipSetAchievement"] = "self",
+	["OnTooltipSetEquipmentSet"] = "self",
+	["OnTooltipSetDefaultAnchor"] = "self",
+	["OnTooltipSetFrameStack"] = "self",
+	["OnTooltipSetItem"] = "self",
+	["OnTooltipSetQuest"] = "self",
+	["OnTooltipSetSpell"] = "self",
+	["OnTooltipSetUnit"] = "self",
+	["OnUpdate"] = "self, elapsed",
+	["OnUpdateModel"] = "self",
+	["OnValueChanged"] = "self, value, userInput",
+	["OnVerticalScroll"] = "self, offset",
+	["PostClick"] = "self, button, down",
+	["PreClick"] = "self, button, down",
+
+}
+
 types["AlphaType"] = function(obj, parent, grandparent)
 		local ret = types["AnimationType"](obj, parent, grandparent)
 		attrfunc(parent, 'SetChange', obj["change"])
@@ -362,10 +443,10 @@ types["ScriptType"] = function(obj, parent, grandparent)
 			attrfunc(obj.nickname, string.format('GetScript(%q)', obj:tag()))
 		end
 		if obj["function"] == '"' then obj["function"] = nil end --workaround for LuaXML bug
-		local func = string.format("function(self, ...)\n\t%s\n\t%s\n\t%s\nend",
-			obj["inherit"] == "append" and "s(self, ...)" or "",
+		local func = string.format("function(%s)\n\t%s%s%s\nend", scriptargs[obj:tag()],
+			obj["inherit"] == "append" and string.format("s(self, %s)\n\t", scriptargs[obj:tag()]) or "",
 			obj["function"] and obj["function"].."()" or (obj[1] and obj[1]:gsub("\r\n", "\n\t")) or "",
-			obj["inherit"] == "prepend" and "s(self, ...)" or "")
+			obj["inherit"] == "prepend" and string.format("s(self, %s)\n\t", scriptargs[obj:tag()]) or "")
 		attrfunc(parent, "SetScript", quote(obj:tag()), obj["inherit"] and func or obj["function"] or func)
 	end
 types["ScrollFrameType"] = function(obj, parent, grandparent)
@@ -612,81 +693,9 @@ tags = {
 	end,
 	["OffScreenFrame"] = types["FrameType"],
 	--["Offset"] = types["Dimension"],
-	["OnAnimFinished"] = types["ScriptType"],
-	["OnArrowPressed"] = types["ScriptType"],
-	["OnAttributeChanged"] = types["ScriptType"],
-	["OnButtonUpdate"] = types["ScriptType"],
-	["OnChar"] = types["ScriptType"],
-	["OnCharComposition"] = types["ScriptType"],
-	["OnClick"] = types["ScriptType"],
-	["OnColorSelect"] = types["ScriptType"],
-	["OnCursorChanged"] = types["ScriptType"],
-	["OnDisable"] = types["ScriptType"],
-	["OnDoubleClick"] = types["ScriptType"],
-	["OnDragStart"] = types["ScriptType"],
-	["OnDragStop"] = types["ScriptType"],
-	["OnEditFocusGained"] = types["ScriptType"],
-	["OnEditFocusLost"] = types["ScriptType"],
-	["OnEnable"] = types["ScriptType"],
-	["OnEnter"] = types["ScriptType"],
-	["OnEnterPressed"] = types["ScriptType"],
-	["OnError"] = types["ScriptType"],
-	["OnEscapePressed"] = types["ScriptType"],
-	["OnEvent"] = types["ScriptType"],
-	["OnExternalLink"] = types["ScriptType"],
-	["OnFinished"] = types["ScriptType"],
-	["OnHide"] = types["ScriptType"],
-	["OnHorizontalScroll"] = types["ScriptType"],
-	["OnHyperlinkClick"] = types["ScriptType"],
-	["OnHyperlinkEnter"] = types["ScriptType"],
-	["OnHyperlinkLeave"] = types["ScriptType"],
-	["OnInputLanguageChanged"] = types["ScriptType"],
-	["OnJoystickAxisMotion"] = types["ScriptType"],
-	["OnJoystickButtonDown"] = types["ScriptType"],
-	["OnJoystickButtonUp"] = types["ScriptType"],
-	["OnJoystickHatMotion"] = types["ScriptType"],
-	["OnJoystickStickMotion"] = types["ScriptType"],
-	["OnKeyDown"] = types["ScriptType"],
-	["OnKeyUp"] = types["ScriptType"],
-	["OnLeave"] = types["ScriptType"],
-	["OnLoad"] = types["ScriptType"],
-	["OnLoop"] = types["ScriptType"],
-	["OnMessageScrollChanged"] = types["ScriptType"],
-	["OnMinMaxChanged"] = types["ScriptType"],
-	["OnMouseDown"] = types["ScriptType"],
-	["OnMouseUp"] = types["ScriptType"],
-	["OnMouseWheel"] = types["ScriptType"],
-	["OnMovieFinished"] = types["ScriptType"],
-	["OnMovieHideSubtitle"] = types["ScriptType"],
-	["OnMovieShowSubtitle"] = types["ScriptType"],
-	["OnPause"] = types["ScriptType"],
-	["OnPlay"] = types["ScriptType"],
-	["OnReceiveDrag"] = types["ScriptType"],
-	["OnScrollRangeChanged"] = types["ScriptType"],
-	["OnShow"] = types["ScriptType"],
-	["OnSizeChanged"] = types["ScriptType"],
-	["OnSpacePressed"] = types["ScriptType"],
-	["OnStop"] = types["ScriptType"],
-	["OnTabPressed"] = types["ScriptType"],
-	["OnTextChanged"] = types["ScriptType"],
-	["OnTextSet"] = types["ScriptType"],
-	["OnTooltipAddMoney"] = types["ScriptType"],
-	["OnTooltipCleared"] = types["ScriptType"],
-	["OnTooltipSetAchievement"] = types["ScriptType"],
-	["OnTooltipSetDefaultAnchor"] = types["ScriptType"],
-	["OnTooltipSetItem"] = types["ScriptType"],
-	["OnTooltipSetQuest"] = types["ScriptType"],
-	["OnTooltipSetSpell"] = types["ScriptType"],
-	["OnTooltipSetUnit"] = types["ScriptType"],
-	["OnUpdate"] = types["ScriptType"],
-	["OnUpdateModel"] = types["ScriptType"],
-	["OnValueChanged"] = types["ScriptType"],
-	["OnVerticalScroll"] = types["ScriptType"],
 	["Origin"] = types["AnimOriginType"],
 	["Path"] = types["PathType"],
 	["PlayerModel"] = types["PlayerModelType"],
-	["PostClick"] = types["ScriptType"],
-	["PreClick"] = types["ScriptType"],
 	["PushedTextOffset"] = function(obj, parent, grandparent)
 		attrfunc(parent, "SetPushedTextOffset", types["Dimension"](obj))
 	end,
@@ -745,6 +754,11 @@ tags = {
 	["Translation"] = types["TranslationType"],
 	["WorldFrame"] = types["WorldFrameType"],
 }
+
+
+for k, v in pairs(scriptargs) do
+	tags[k] = types["ScriptType"]
+end
 
 ------------------------------------------------------
 
