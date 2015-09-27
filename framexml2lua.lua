@@ -100,8 +100,8 @@ scriptargs = {
 	["OnTooltipAddMoney"] = "self, cost, maxcost",
 	["OnTooltipCleared"] = "self",
 	["OnTooltipSetAchievement"] = "self",
-	["OnTooltipSetEquipmentSet"] = "self",
 	["OnTooltipSetDefaultAnchor"] = "self",
+	["OnTooltipSetEquipmentSet"] = "self",
 	["OnTooltipSetFrameStack"] = "self",
 	["OnTooltipSetItem"] = "self",
 	["OnTooltipSetQuest"] = "self",
@@ -200,6 +200,12 @@ types["BrowserType"] = function(obj, parent, grandparent)
 	end
 types["ButtonStyleType"] = function(obj, parent, grandparent)
 		return quote(obj["style"])
+	end
+types["ButtonTextureType"] = function(obj, parent, grandparent) --not defined in schema, helper type
+		local ret = types["TextureType"](obj, parent, grandparent)
+		reqattrfunc(obj.nickname, "SetAllPoints")
+		attrfunc(parent, "Set"..obj:tag(), obj.nickname)
+		return ret
 	end
 types["ButtonType"] = function(obj, parent, grandparent)
 		local ret = types["FrameType"](obj, parent, grandparent)
@@ -582,51 +588,23 @@ tags = {
 		return ret
 	end,
 	["CheckButton"] = types["CheckButtonType"],
-	["CheckedTexture"] = function(obj, parent, grandparent)
-		local ret = types["TextureType"](obj, parent, grandparent)
-		attrfunc(parent, "SetCheckedTexture", obj.nickname)
-		return ret
-	end,
+	["CheckedTexture"] = types["ButtonTextureType"],
 	["CinematicModel"] = types["CinematicModelType"],
 	["Color"] = types["ColorType"],
 	["ColorSelect"] = types["ColorSelectType"],
-	["ColorValueTexture"] = function(obj, parent, grandparent)
-		local ret = types["TextureType"](obj, parent, grandparent)
-		attrfunc(parent, "SetColorValueTexture", obj.nickname)
-		return ret
-	end,
-	["ColorValueThumbTexture"] = function(obj, parent, grandparent)
-		local ret = types["TextureType"](obj, parent, grandparent)
-		attrfunc(parent, "SetColorValueThumbTexture", obj.nickname)
-		return ret
-	end,
-	["ColorWheelTexture"] = function(obj, parent, grandparent)
-		local ret = types["TextureType"](obj, parent, grandparent)
-		attrfunc(parent, "SetColorWheelTexture", obj.nickname)
-		return ret
-	end,
-	["ColorWheelThumbTexture"] = function(obj, parent, grandparent)
-		local ret = types["TextureType"](obj, parent, grandparent)
-		attrfunc(parent, "SetColorWheelThumbTexture", obj.nickname)
-		return ret
-	end,
+	["ColorValueTexture"] = types["ButtonTextureType"],
+	["ColorValueThumbTexture"] = types["ButtonTextureType"],
+	["ColorWheelTexture"] = types["ButtonTextureType"],
+	["ColorWheelThumbTexture"] = types["ButtonTextureType"],
 	["ControlPoint"] = types["ControlPointType"],
 	["ControlPoints"] = types["ControlPointsType"],
 	["Cooldown"] = types["CooldownType"],
-	["DisabledCheckedTexture"] = function(obj, parent, grandparent)
-		local ret = types["TextureType"](obj, parent, grandparent)
-		attrfunc(parent, "SetDisabledCheckedTexture", obj.nickname)
-		return ret
-	end,
+	["DisabledCheckedTexture"] = types["ButtonTextureType"],
 	--["DisabledColor"] = types["ColorType"], no Lua equivalent, not used in FrameXML
 	["DisabledFont"] = function(obj, parent, grandparent)
 		attrfunc(parent, "SetDisabledFontObject", types["ButtonStyleType"](obj))
 	end,
-	["DisabledTexture"] = function(obj, parent, grandparent)
-		local ret = types["TextureType"](obj, parent, grandparent)
-		attrfunc(parent, "SetDisabledTexture", obj.nickname)
-		return ret
-	end,
+	["DisabledTexture"] = types["ButtonTextureType"],
 	["DressUpModel"] = types["DressUpModelType"],
 	["EdgeSize"] = types["Value"],
 	["EditBox"] = types["EditBoxType"],
@@ -649,11 +627,7 @@ tags = {
 	["HighlightFont"] = function(obj, parent, grandparent)
 		attrfunc(parent, "SetHighlightFontObject", types["ButtonStyleType"](obj))
 	end,
-	["HighlightTexture"] = function(obj, parent, grandparent)
-		local ret = types["TextureType"](obj, parent, grandparent)
-		attrfunc(parent, "SetHighlightTexture", obj.nickname)
-		return ret
-	end,
+	["HighlightTexture"] = types["ButtonTextureType"],
 	["HitRectInsets"] = types["Inset"],
 	--[[ no Lua equivalent
 	["KeyValue"] = types["KeyValueType"],
@@ -686,11 +660,7 @@ tags = {
 	["NormalFont"] = function(obj, parent, grandparent)
 		attrfunc(parent, "SetNormalFontObject", types["ButtonStyleType"](obj))
 	end,
-	["NormalTexture"] = function(obj, parent, grandparent)
-		local ret = types["TextureType"](obj, parent, grandparent)
-		attrfunc(parent, "SetNormalTexture", obj.nickname)
-		return ret
-	end,
+	["NormalTexture"] = types["ButtonTextureType"],
 	["OffScreenFrame"] = types["FrameType"],
 	--["Offset"] = types["Dimension"],
 	["Origin"] = types["AnimOriginType"],
@@ -699,11 +669,7 @@ tags = {
 	["PushedTextOffset"] = function(obj, parent, grandparent)
 		attrfunc(parent, "SetPushedTextOffset", types["Dimension"](obj))
 	end,
-	["PushedTexture"] = function(obj, parent, grandparent)
-		local ret = types["TextureType"](obj, parent, grandparent)
-		attrfunc(parent, "SetPushedTexture", obj.nickname)
-		return ret
-	end,
+	["PushedTexture"] = types["ButtonTextureType"],
 	["QuestPOIFrame"] = types["BlobType"],
 	["Rect"] = function(obj, parent, grandparent) --invalid according to schema, but used in FrameXML
 		return obj["ULx"] or 0, obj["ULy"] or 0, obj["LLx"] or 0, obj["LLy"] or 0, obj["ULx"] or 0, obj["URy"] or 0, obj["LRx"] or 0, obj["LRy"] or 0
@@ -744,11 +710,7 @@ tags = {
 	end,
 	["TextInsets"] = types["Inset"],
 	["Texture"] = types["TextureType"],
-	["ThumbTexture"] =  function(obj, parent, grandparent)
-		local ret = types["TextureType"](obj, parent, grandparent)
-		attrfunc(parent, "SetThumbTexture", obj.nickname)
-		return ret
-	end,
+	["ThumbTexture"] =  types["ButtonTextureType"],
 	["TileSize"] = types["Value"],
 	["TitleRegion"] = types["LayoutFrameType"],
 	["Translation"] = types["TranslationType"],
